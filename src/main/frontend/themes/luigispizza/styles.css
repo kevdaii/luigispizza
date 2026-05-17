@@ -1,0 +1,11 @@
+@import url('./main-layout.css');    html, spreadsheet-view-export, grid-with-filters-view-export {
+      --lumo-primary-color: hsl(124, 79%, 46%);
+      --lumo-primary-color-50pct: hsla(124, 79%, 46%, 0.5);
+      --lumo-primary-color-10pct: hsla(124, 79%, 46%, 0.1);
+      --lumo-success-color: hsl(134, 100%, 38%);
+      --lumo-success-color-50pct: hsla(134, 100%, 38%, 0.5);
+      --lumo-success-color-10pct: hsla(134, 100%, 38%, 0.1);
+      --lumo-primary-text-color: hsl(124, 41%, 37%);
+      --lumo-success-text-color: hsl(134, 100%, 38%);
+
+    }

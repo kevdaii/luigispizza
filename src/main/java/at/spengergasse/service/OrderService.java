@@ -60,4 +60,8 @@ public class OrderService {
     public void removeAllOrders() {
         orders.clear();
     }
+
+    public void addOrder(Order o) {
+        orders.add(o);
+    }
 }

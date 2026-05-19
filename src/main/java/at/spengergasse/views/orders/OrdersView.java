@@ -79,11 +79,44 @@ public class OrdersView extends VerticalLayout {
             return cb; })
                 .setHeader("Garlic")
                 .setSortable(true);
+        grid.addComponentColumn(o -> {
+            Button remove = new Button("Delete Order");
+            remove.addClickListener(e -> {removeOrder(o.getOrderId());});
+            return remove;})
+                        .setHeader("Action")
+                        .setSortable(false);
+
+        grid.addComponentColumn(o -> {
+            Button add1 = new Button("One more");
+            add1.addClickListener(e -> addOnePiece(o.getOrderId()));
+            return add1;})
+                .setHeader("Action")
+                .setSortable(false);
 
         grid.setSizeFull();
         add(buttons);
         add(grid);
         reload();
+    }
+
+    private void addOnePiece(Long orderId) {
+        try{
+            orderService.addOnePiece(orderId);
+            reload();
+        }catch (OrderException e){
+            Notification.show("Error adding one piece!");
+        }
+
+    }
+
+    private void removeOrder(Long orderId) {
+        try{
+            orderService.removeOrder(orderId);
+            reload();
+        }catch (OrderException e){
+            Notification.show("Error removing order!");
+        }
+
     }
 
     private void addWrongOrder() {

@@ -4,10 +4,12 @@ import at.spengergasse.domain.Order;
 import at.spengergasse.domain.OrderException;
 import at.spengergasse.service.OrderService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -28,7 +30,7 @@ public class OrdersView extends VerticalLayout {
     private final Button buttonAdd10Orders = new Button("Add 10 orders");
     private final Button buttonAddWrong = new Button("Add wrong order");
 
-    private final Grid<Order> grid = new Grid<>(Order.class, true);
+    private final Grid<Order> grid = new Grid<>(Order.class, false); // set true if you don't wanna do grid.addColumn...
     private final OrderService orderService;
 
     public OrdersView(@Autowired OrderService orderService) {
@@ -42,6 +44,42 @@ public class OrdersView extends VerticalLayout {
         HorizontalLayout buttons = new HorizontalLayout(buttonRemoveAllOrders, buttonAdd10Orders,buttonAddWrong);
         buttons.setSpacing(true);
         setSizeFull();
+
+        grid.addColumn(o -> o.getOrderId())
+                        .setHeader("Order ID")
+                        .setSortable(true);
+        grid.addColumn(o -> o.getOrderDate())
+                        .setHeader("Order Date")
+                        .setSortable(true);
+        grid.addColumn(o -> o.getPizza())
+                        .setHeader("Pizza")
+                        .setSortable(true);
+        grid.addColumn(o -> o.getSize())
+                        .setHeader("Size")
+                        .setSortable(true);
+        Image slice = new Image("icons/slice.png", "pizzaslice");
+        slice.setWidth("20px");
+        grid.addColumn(o -> o.getQuantity())
+                        .setHeader(new HorizontalLayout(slice, new Span("Quantity")))
+                        .setSortable(true);
+        grid.addColumn(o -> o.getPrice())
+                        .setHeader("Price")
+                        .setSortable(true);
+        // ? = if o.getGarlic() == true
+        //        return "Y"
+        //     else
+        //        return "N"
+        grid.addColumn(o -> o.getGarlic() ? "Y" : "N")
+                        .setHeader("Garlic")
+                        .setSortable(true);
+        grid.addComponentColumn(o -> {
+            Checkbox cb;
+            cb = new Checkbox(o.getGarlic());
+            cb.setReadOnly(true);
+            return cb; })
+                .setHeader("Garlic")
+                .setSortable(true);
+
         grid.setSizeFull();
         add(buttons);
         add(grid);

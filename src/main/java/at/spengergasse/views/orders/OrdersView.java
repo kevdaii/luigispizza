@@ -2,10 +2,12 @@ package at.spengergasse.views.orders;
 
 import at.spengergasse.domain.Order;
 import at.spengergasse.service.OrderService;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
@@ -18,16 +20,35 @@ import org.vaadin.lineawesome.LineAwesomeIconUrl;
 @Route("orders")
 @Menu(order = 1, icon = LineAwesomeIconUrl.PIZZA_SLICE_SOLID)
 public class OrdersView extends VerticalLayout {
+    private final Button buttonRemoveAllOrders = new Button("Remove all orders");
+    private final Button buttonAdd10Orders = new Button("Add 10 orders");
     private final Grid<Order> grid = new Grid<>(Order.class, true);
     private final OrderService orderService;
 
     public OrdersView(@Autowired OrderService orderService) {
         this.orderService = orderService;
-        setSpacing(false);
+        setSpacing(true);
 
+        buttonRemoveAllOrders.addClickListener(e -> removeAllOrders());
+        buttonAdd10Orders.addClickListener(e -> add10Orders());
+        HorizontalLayout buttons = new HorizontalLayout(buttonRemoveAllOrders, buttonAdd10Orders);
+        buttons.setSpacing(true);
         setSizeFull();
         grid.setSizeFull();
+        add(buttons);
         add(grid);
+        reload();
+    }
+
+    private void add10Orders() {
+        orderService.fillTestData(10);
+        buttonRemoveAllOrders.setEnabled(true);
+        reload();
+    }
+
+    public void removeAllOrders() {
+        orderService.removeAllOrders();
+        buttonRemoveAllOrders.setEnabled(false);
         reload();
     }
 

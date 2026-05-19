@@ -32,7 +32,6 @@ public class OrderService {
         String[] SIZES = {"Small", "Medium", "Large", "Family"};
 
         faker = new Faker();
-        orders.clear();
 
         for(int i = 0; i < amount; i++){
             orderDate = LocalDate.now().minusDays((int) (Math.random() * 365 * 10));
@@ -56,5 +55,9 @@ public class OrderService {
         return orders.stream()
                 .map(o -> o.toString())
                 .collect(Collectors.joining("\n"));
+    }
+
+    public void removeAllOrders() {
+        orders.clear();
     }
 }

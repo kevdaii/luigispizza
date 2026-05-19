@@ -2,11 +2,14 @@ package at.spengergasse.service;
 
 import at.spengergasse.domain.Order;
 import com.github.javafaker.Faker;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+
+@Service
 public class OrderService {
     private ArrayList<Order> orders;
 
@@ -41,6 +44,11 @@ public class OrderService {
             order = new Order(orderDate, pizza, size, quantity, price, garlic);
             orders.add(order);
         }
+    }
+
+    public ArrayList<Order> findAll(){
+        ArrayList<Order> copy = new ArrayList<>(orders);
+        return copy;
     }
 
     @Override

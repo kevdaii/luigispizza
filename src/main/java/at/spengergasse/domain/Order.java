@@ -23,27 +23,27 @@ public class Order implements Cloneable{
     @NotNull(message = "The price is required!")
 
     @PastOrPresent(message = "Order date must be now or in the past")
-    private LocalDate   orderDate;
+    private LocalDate   orderDate = LocalDate.now();
 
     @NotBlank(message = "The pizza is required!")
     @Size(min=2, max=20, message = "Wrong Pizza!")
-    private String      pizza;
+    private String      pizza = "Salami";
 
     @NotNull(message = "Size is required")
     @Pattern(regexp = "Small|Medium|Large|Family", message = "Wrong size. Small|Medium|Large|Family")
-    private String      size;
+    private String      size = "Medium";
 
     @NotNull(message = "The quantity is required")
     @Min(value = 1, message = "Min 1 Pizza")
     @Max(value = 5, message = "Max 5 Pizzas")
-    private Integer     quantity;
+    private Integer     quantity = 1;
 
     @NotNull(message = "The price is required!")
     @DecimalMin(value = "5", message = "The min price is 5 EUR!")
-    private Double      price;
+    private Double      price = 9.0;
 
     @NotNull(message = "The garlic is requirde")
-    private Boolean     garlic;
+    private Boolean     garlic = false;
 
     private static final AtomicLong sequence = new AtomicLong(1000);
 

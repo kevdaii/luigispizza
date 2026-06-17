@@ -30,12 +30,12 @@ public class Order implements Cloneable{
     private String      vehicleType = "Coupe";
 
     @NotNull(message = "Make is required")
-    @Pattern(regexp = "Nissan|Toyota|Mazda|Subaru", message = "Wrong make. Nissan|Toyota|Mazda|Subaru")
+    @Pattern(regexp = "Nissan|Toyota|Mazda|Subaru|Honda", message = "Wrong make. Nissan|Toyota|Mazda|Subaru|Honda")
     private String      make = "Mazda";
 
     @NotNull(message = "The horsepower is required")
-    @Min(value = 1, message = "Min 50")
-    @Max(value = 5, message = "Max 1000")
+    @Min(value = 50, message = "Min 50")
+    @Max(value = 1000, message = "Max 1000")
     private Integer     horsepower = 280;
 
     @NotNull(message = "The price is required!")

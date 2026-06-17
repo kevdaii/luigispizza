@@ -40,7 +40,7 @@ public class OrdersView extends VerticalLayout {
     private final Button buttonRemoveAllOrders = new Button("Remove all orders");
     private final Button buttonAdd10Orders = new Button("Add 10 orders");
     private final Button buttonAddWrong = new Button("Add wrong order");
-    private final Button buttonAdd1Order = new Button("Add order");
+    private final Button buttonAddEditOrder = new Button("Add order");
 
     private final Grid<Order> grid = new Grid<>(Order.class, false); // set true if you don't wanna do grid.addColumn...
     private final OrderService orderService;
@@ -54,9 +54,9 @@ public class OrdersView extends VerticalLayout {
         buttonRemoveAllOrders.addClickListener(e -> removeAllOrders());
         buttonAdd10Orders.addClickListener(e -> add10Orders());
         buttonAddWrong.addClickListener(e -> addWrongOrder());
-        buttonAdd1Order.addClickListener(e -> add1Order());
+        buttonAddEditOrder.addClickListener(e -> addEditOrder(null));
 
-        HorizontalLayout buttons = new HorizontalLayout(buttonRemoveAllOrders, buttonAdd10Orders,buttonAddWrong, buttonAdd1Order);
+        HorizontalLayout buttons = new HorizontalLayout(buttonRemoveAllOrders, buttonAdd10Orders,buttonAddWrong, buttonAddEditOrder);
         buttons.setSpacing(true);
         setSizeFull();
 
@@ -136,10 +136,20 @@ public class OrdersView extends VerticalLayout {
                         .setHeader("Action")
                         .setSortable(false);
 
+        /*
         grid.addComponentColumn(o -> {
             Button add1 = new Button("One more");
             add1.addClickListener(e -> addOnePiece(o.getOrderId()));
             return add1;})
+                .setHeader("Action")
+                .setSortable(false);
+
+         */
+
+        grid.addComponentColumn(o -> {
+            Button edit = new Button("Edit Order");
+            edit.addClickListener(e -> addEditOrder(o));
+            return edit;})
                 .setHeader("Action")
                 .setSortable(false);
 
@@ -149,17 +159,18 @@ public class OrdersView extends VerticalLayout {
         reload();
     }
 
-    private void add1Order() {
+    private void addEditOrder(Order existingOrder) {
+        Order order;
         Dialog dialog = new Dialog();
-        dialog.setHeaderTitle("Add 1 Order");
+        dialog.setHeaderTitle(existingOrder!=null ? "Edit Order" : "Add Order");
 
         TextField orderId = new TextField("Order ID");
         orderId.setReadOnly(true);
         DatePicker orderDate = new DatePicker("Order Date");
         TextField vehicleType = new TextField("Vehicle Type");
-        ComboBox<String> make = new ComboBox<>();
-        make.setItems("NISSAN", "HONDA", "TOYOTA", "MAZDA", "SUBARU");
-        IntegerField horspower = new IntegerField("Horsepower");
+        ComboBox<String> make = new ComboBox<>("Select Make");
+        make.setItems("Nissan", "Honda", "Toyota", "Mazda", "Subaru");
+        IntegerField horsepower = new IntegerField("Horsepower");
         NumberField price = new NumberField("Price");
         Checkbox oldTimer = new Checkbox("Old Timer");
 
@@ -170,15 +181,20 @@ public class OrdersView extends VerticalLayout {
                 .bind("vehicleType");
         binder.forField(make)
                 .bind("make");
-        binder.forField(horspower)
+        binder.forField(horsepower)
                 .bind("horsepower");
         binder.forField(price)
                 .bind("price");
         binder.forField(oldTimer)
                 .bind("oldTimer");
 
-        Order order = new Order();
-        order.setOrderId();
+        if (existingOrder == null) {
+            order = new Order();
+            order.setOrderId();
+        }else{
+            order = existingOrder;
+        }
+
         orderId.setValue("" + order.getOrderId());
 
         binder.setBean(order);
@@ -188,10 +204,18 @@ public class OrdersView extends VerticalLayout {
 
         ok.addClickListener(e -> {
             if(binder.validate().isOk()){
-                orderService.addOrder(order);
-                reload();
-                dialog.close();
-                Notification.show("Order added!");
+                if(existingOrder == null) {
+                    orderService.addOrder(order);
+                    reload();
+                    dialog.close();
+                    Notification.show("Order added!");
+                }else{
+                    reload();
+                    dialog.close();
+                    Notification.show("Order changed!");
+                }
+
+
             }else{
                 Notification.show("Invalid Order!");
             }
@@ -204,13 +228,10 @@ public class OrdersView extends VerticalLayout {
 
         HorizontalLayout buttons = new HorizontalLayout(ok, cancel);
 
-        VerticalLayout formLayout = new VerticalLayout(orderId, orderDate, vehicleType, make, horspower, price, oldTimer, buttons);
+        VerticalLayout formLayout = new VerticalLayout(orderId, orderDate, vehicleType, make, horsepower, price, oldTimer, buttons);
 
         dialog.add(formLayout);
         dialog.open();
-
-
-
     }
 
     private void addOnePiece(Long orderId) {

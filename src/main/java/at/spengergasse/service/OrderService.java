@@ -31,7 +31,7 @@ public class OrderService {
         Boolean     oldTimer;
 
         String[] VEHICLETYPE = {"SUV", "Coupe", "Sedan", "Van", "Pickup", "Roadster"};
-        String[] MAKE = {"NISSAN", "HONDA", "TOYOTA", "MAZDA", "SUBARU"};
+        String[] MAKE = {"Nissan", "Honda", "Toyota", "Mazda", "Subaru"};
 
         faker = new Faker();
 

@@ -3,17 +3,9 @@ package at.spengergasse.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicLong;
 
-@Getter
-@Setter
-//@NoArgsConstructor
-//@AllArgsConstructor
-@ToString
 @Entity
 @Table(name = "car_order")
 public class Order implements Cloneable{
@@ -67,10 +59,75 @@ public class Order implements Cloneable{
 
     public Order() {}
 
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
+    public LocalDate getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(LocalDate orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public String getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(String vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    public String getMake() {
+        return make;
+    }
+
+    public void setMake(String make) {
+        this.make = make;
+    }
+
+    public Integer getHorsepower() {
+        return horsepower;
+    }
+
+    public void setHorsepower(Integer horsepower) {
+        this.horsepower = horsepower;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
     public void setPrice(Double price){
         if (price.doubleValue() < 5000)
             throw new OrderException("Price to low!");
         this.price = price;
+    }
+
+    public Boolean getOldTimer() {
+        return oldTimer;
+    }
+
+    public void setOldTimer(Boolean oldTimer) {
+        this.oldTimer = oldTimer;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", orderDate=" + orderDate +
+                ", vehicleType='" + vehicleType + '\'' +
+                ", make='" + make + '\'' +
+                ", horsepower=" + horsepower +
+                ", price=" + price +
+                ", oldTimer=" + oldTimer +
+                '}';
     }
 
     @Override

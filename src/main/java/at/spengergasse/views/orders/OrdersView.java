@@ -94,6 +94,7 @@ public class OrdersView extends VerticalLayout {
                         .setSortable(true);
         Image slice = new Image("icons/horsepower.png", "horse");
         slice.setWidth("20px");
+
         grid.addColumn(o -> o.getHorsepower())
                         .setHeader(new HorizontalLayout(slice, new Span("HP")))
                         .setSortable(true);
@@ -190,7 +191,6 @@ public class OrdersView extends VerticalLayout {
 
         if (existingOrder == null) {
             order = new Order();
-            order.setOrderId();
         }else{
             order = existingOrder;
         }
@@ -204,17 +204,10 @@ public class OrdersView extends VerticalLayout {
 
         ok.addClickListener(e -> {
             if(binder.validate().isOk()){
-                if(existingOrder == null) {
-                    orderService.addOrder(order);
-                    reload();
-                    dialog.close();
-                    Notification.show("Order added!");
-                }else{
-                    reload();
-                    dialog.close();
-                    Notification.show("Order changed!");
-                }
-
+                orderService.addOrder(order);
+                reload();
+                dialog.close();
+                Notification.show("Order added!");
 
             }else{
                 Notification.show("Invalid Order!");

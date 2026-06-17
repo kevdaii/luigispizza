@@ -1,8 +1,7 @@
 package at.spengergasse.domain;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -16,8 +15,10 @@ import java.util.concurrent.atomic.AtomicLong;
 //@AllArgsConstructor
 @ToString
 @Entity
+@Table(name = "car_order")
 public class Order implements Cloneable{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long        orderId;
 
     @NotNull(message = "The price is required!")
@@ -45,8 +46,6 @@ public class Order implements Cloneable{
     @NotNull(message = "The oldTimer is required!")
     private Boolean     oldTimer = true;
 
-    private static final AtomicLong sequence = new AtomicLong(1000);
-
     public Order(Long orderId, LocalDate orderDate, String vehicleType, String make, Integer horsepower, Double price, Boolean oldTimer){
         setOrderId(orderId);
         setOrderDate(orderDate);
@@ -58,7 +57,6 @@ public class Order implements Cloneable{
     }
 
     public Order(LocalDate orderDate, String vehicleType, String make, Integer horsepower, Double price, Boolean oldTimer){
-        setOrderId();
         setOrderDate(orderDate);
         setVehicleType(vehicleType);
         setMake(make);
@@ -68,10 +66,6 @@ public class Order implements Cloneable{
     }
 
     public Order() {}
-
-    public void setOrderId(){
-        orderId = sequence.getAndIncrement();
-    }
 
     public void setPrice(Double price){
         if (price.doubleValue() < 5000)

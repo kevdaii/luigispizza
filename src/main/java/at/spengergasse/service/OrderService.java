@@ -2,22 +2,28 @@ package at.spengergasse.service;
 
 import at.spengergasse.domain.Order;
 import at.spengergasse.domain.OrderException;
+import at.spengergasse.repository.OrderRepository;
 import com.github.javafaker.Faker;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
 @Service
 public class OrderService {
-    private ArrayList<Order> orders;
+    private final OrderRepository orderRepository;
 
-    public OrderService(){
-        orders = new ArrayList<>(1000);
-        fillTestData(500);
+    public OrderService(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+
+        if(orderRepository.count() == 0) {
+            fillTestData(30);
+        }
+
     }
 
     public void fillTestData(int amount){
@@ -43,30 +49,33 @@ public class OrderService {
             price = faker.number().randomDouble(2, 5000, 100000);
             oldTimer = faker.bool().bool();
             order = new Order(orderDate, vehicleType, make, horsepower, price, oldTimer);
-            orders.add(order);
+            orderRepository.save(order);
         }
     }
 
+
     public ArrayList<Order> findAll(){
-        ArrayList<Order> copy = new ArrayList<>(orders);
+        ArrayList<Order> copy = (ArrayList<Order>) orderRepository.findAll();
         return copy;
     }
 
+
     @Override
     public String toString(){
-        return orders.stream()
+        return orderRepository.findAll().stream()
                 .map(o -> o.toString())
-                .collect(Collectors.joining("\n"));
+                .collect(Collectors.joining("\n")).toString();
     }
 
     public void removeAllOrders() {
-        orders.clear();
+        orderRepository.deleteAll();
     }
 
     public void addOrder(Order o) {
-        orders.add(o);
+        orderRepository.save(o);
     }
 
+    /*
     public void removeOrder_Old(Long orderId) {
         Order o;
         Iterator<Order> it;
@@ -80,14 +89,21 @@ public class OrderService {
         }
     }
 
+     */
+
     public void removeOrder(Long orderId) {
         if(orderId == null)
             throw new OrderException("No Order ID!");
-        boolean found = orders.removeIf(o -> o.getOrderId().equals(orderId));
-        if(!found)
-            throw new OrderException("No Order ID!");
+
+        Optional<Order> order = orderRepository.findById(orderId);
+
+        if(orderRepository.existsById(orderId) == false)
+            throw new OrderException("Wrong Order ID!");
+        orderRepository.deleteById(orderId);
+
     }
 
+    /*
     public void addOnePiece_Old(Long orderId){
         boolean found = false;
         if(orderId == null)
@@ -102,9 +118,15 @@ public class OrderService {
             throw new OrderException("Wrong Order ID!");
     }
 
+     */
+
     public void addOnePiece(Long orderId){
-        orders.stream()
-                .filter(o -> o.getOrderId().equals(orderId))
-                .forEach(order -> order.setHorsepower(order.getHorsepower()+50));
+        Optional<Order> o = orderRepository.findById(orderId);
+
+        if(o.isEmpty())
+            throw new OrderException("No Order ID!");
+
+        o.get().setHorsepower(o.get().getHorsepower()+50);
+        orderRepository.save(o.get());
     }
 }

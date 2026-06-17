@@ -31,11 +31,11 @@ public class DeliveryView extends VerticalLayout {
 
         add(delivery);
 
-        Component card0 = getCard("1st district", 2.5, OptionalDouble.of(12.0));
-        Component card1 = getCard("3rd and 4th district", 3.5, OptionalDouble.of(15.0));
-        Component card2 = getCard("7th and 8th district", 4.0, OptionalDouble.of(16.0));
-        Component card3 = getCard("Vienna", 6.0, OptionalDouble.empty());
-        Component card4 = getCard("Lower Austria", 20.0, OptionalDouble.empty());
+        Component card0 = getCard("EUROPE", 1500.0);
+        Component card1 = getCard("NORTH AMERICA", 2500.0);
+        Component card2 = getCard("AUSTRALIA", 1600.0);
+        Component card3 = getCard("ASIA", 1200.0);
+        Component card4 = getCard("AFRICA", 2000.0);
 
         FlexLayout cards = new FlexLayout(card0, card1, card2, card3, card4);
         cards.setWidthFull();
@@ -43,23 +43,31 @@ public class DeliveryView extends VerticalLayout {
         cards.setFlexWrap(FlexLayout.FlexWrap.WRAP);
         add(cards);
 
-        Paragraph info = new Paragraph("We delivery to you within 30 to 90 minutes - fresh and hot.");
+        Paragraph info = new Paragraph("From the Japanese auction block to your driveway in 6 to 8 weeks. We handle the shipping, customs, and full local compliance.");
         info.setWidth("100%");
         info.getStyle().set("text-align", "center");
         add(info);
     }
 
-    private Component getCard(String sellingZone, double deliveryPrice, OptionalDouble deliveryFee){
-        Paragraph fee;
+    private Component getCard(String sellingZone, double deliveryPrice){
+        Paragraph subtitle;
 
         H2 zone = new H2(sellingZone);
-        Paragraph price = new Paragraph(deliveryPrice + " Euro");
-        if(deliveryFee.isPresent())
-            fee = new Paragraph("Free delivery for an order over " + deliveryFee.getAsDouble() + "Euro");
-        else
-            fee = new Paragraph("No free delivery");
+        Paragraph price = new Paragraph(deliveryPrice + " Dollar");
 
-        VerticalLayout card = new VerticalLayout(zone, price, fee);
+        if(sellingZone == "EUROPE")
+            subtitle = new Paragraph("Typical arrival via Bremerhaven or Koper. Transit: 6-8 weeks.\n (These are the standard entry ports for vehicles heading into Central Europe and Austria)");
+        else if(sellingZone == "NORTH AMERICA")
+            subtitle = new Paragraph("RoRo shipping to major East and West Coast ports. Transit: 4-6 weeks.");
+        else if(sellingZone == "AUSTRALIA")
+            subtitle = new Paragraph("Includes mandatory bio-security cleaning preparation. Transit: 3-5 weeks.");
+        else if(sellingZone == "ASIA")
+            subtitle = new Paragraph("Shortest maritime transit times. Est: 1-3 weeks.");
+        else if(sellingZone == "AFRICA")
+            subtitle = new Paragraph("Serving major Eastern and Southern ports (e.g., Mombasa, Durban).");
+        else subtitle = new Paragraph("No free delivery");
+
+        VerticalLayout card = new VerticalLayout(zone, price, subtitle);
         card.setWidth("350px");
         card.setPadding(true);
         card.setSpacing(false);

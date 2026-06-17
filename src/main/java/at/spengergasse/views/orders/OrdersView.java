@@ -16,6 +16,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.popover.Popover;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -28,12 +29,13 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
+import java.text.DecimalFormat;
 
 import java.time.LocalDate;
 
 @PageTitle("Orders")
 @Route("orders")
-@Menu(order = 1, icon = LineAwesomeIconUrl.PIZZA_SLICE_SOLID)
+@Menu(order = 1, icon = LineAwesomeIconUrl.CAR_ALT_SOLID)
 public class OrdersView extends VerticalLayout {
     private final Button buttonRemoveAllOrders = new Button("Remove all orders");
     private final Button buttonAdd10Orders = new Button("Add 10 orders");
@@ -42,6 +44,8 @@ public class OrdersView extends VerticalLayout {
 
     private final Grid<Order> grid = new Grid<>(Order.class, false); // set true if you don't wanna do grid.addColumn...
     private final OrderService orderService;
+
+    private static final DecimalFormat PRICE_FORMAT = new DecimalFormat("#,##0.00'$'");
 
     public OrdersView(@Autowired OrderService orderService) {
         this.orderService = orderService;
@@ -62,34 +66,69 @@ public class OrdersView extends VerticalLayout {
         grid.addColumn(o -> o.getOrderDate())
                         .setHeader("Order Date")
                         .setSortable(true);
-        grid.addColumn(o -> o.getPizza())
-                        .setHeader("Pizza")
+        /*
+        grid.addColumn(o -> o.getVehicleType())
+                        .setHeader("Vehicle Type")
                         .setSortable(true);
-        grid.addColumn(o -> o.getSize())
-                        .setHeader("Size")
+
+         */
+        grid.addComponentColumn(o -> {
+                    Span name = new Span(o.getVehicleType());
+
+                    Image preview = new Image("images/" + o.getVehicleType().toLowerCase() + ".png", o.getVehicleType());
+                    preview.setWidth("150px");
+
+                    Popover popover = new Popover();
+                    popover.setTarget(name);
+                    popover.setOpenOnHover(true);
+                    popover.add(preview);
+
+                    return new HorizontalLayout(name, popover);
+                })
+                .setHeader("Vehicle Type")
+                .setComparator(o -> o.getVehicleType())
+                .setSortable(true);
+
+        grid.addColumn(o -> o.getMake())
+                        .setHeader("Make")
                         .setSortable(true);
-        Image slice = new Image("icons/slice.png", "pizzaslice");
+        Image slice = new Image("icons/horsepower.png", "horse");
         slice.setWidth("20px");
-        grid.addColumn(o -> o.getQuantity())
-                        .setHeader(new HorizontalLayout(slice, new Span("Quantity")))
+        grid.addColumn(o -> o.getHorsepower())
+                        .setHeader(new HorizontalLayout(slice, new Span("HP")))
                         .setSortable(true);
+
+        /*
         grid.addColumn(o -> o.getPrice())
                         .setHeader("Price")
                         .setSortable(true);
-        // ? = if o.getGarlic() == true
+
+         */
+
+        grid.addColumn(o -> PRICE_FORMAT.format(o.getPrice()))
+                .setHeader("Price")
+                .setComparator(o -> o.getPrice())
+                .setSortable(true);
+
+        // ? = if o.getOldtimer() == true
         //        return "Y"
         //     else
         //        return "N"
-        grid.addColumn(o -> o.getGarlic() ? "Y" : "N")
-                        .setHeader("Garlic")
+        /*
+        grid.addColumn(o -> o.getOldTimer() ? "Y" : "N")
+                        .setHeader("Old Timer")
                         .setSortable(true);
+
+         */
+
         grid.addComponentColumn(o -> {
             Checkbox cb;
-            cb = new Checkbox(o.getGarlic());
+            cb = new Checkbox(o.getOldTimer());
             cb.setReadOnly(true);
             return cb; })
-                .setHeader("Garlic")
+                .setHeader("OldTimer")
                 .setSortable(true);
+
         grid.addComponentColumn(o -> {
             Button remove = new Button("Delete Order");
             remove.addClickListener(e -> {removeOrder(o.getOrderId());});
@@ -117,26 +156,26 @@ public class OrdersView extends VerticalLayout {
         TextField orderId = new TextField("Order ID");
         orderId.setReadOnly(true);
         DatePicker orderDate = new DatePicker("Order Date");
-        TextField pizza = new TextField("Pizza");
-        ComboBox<String> size = new ComboBox<>();
-        size.setItems("Small", "Medium", "Large", "Family");
-        IntegerField quantity = new IntegerField("Quantity");
+        TextField vehicleType = new TextField("Vehicle Type");
+        ComboBox<String> make = new ComboBox<>();
+        make.setItems("NISSAN", "HONDA", "TOYOTA", "MAZDA", "SUBARU");
+        IntegerField horspower = new IntegerField("Horsepower");
         NumberField price = new NumberField("Price");
-        Checkbox garlic = new Checkbox("Garlic");
+        Checkbox oldTimer = new Checkbox("Old Timer");
 
         BeanValidationBinder<Order> binder = new BeanValidationBinder<>(Order.class);
         binder.forField(orderDate)
                 .bind("orderDate");
-        binder.forField(pizza)
-                .bind("pizza");
-        binder.forField(size)
-                .bind("size");
-        binder.forField(quantity)
-                .bind("quantity");
+        binder.forField(vehicleType)
+                .bind("vehicleType");
+        binder.forField(make)
+                .bind("make");
+        binder.forField(horspower)
+                .bind("horsepower");
         binder.forField(price)
                 .bind("price");
-        binder.forField(garlic)
-                .bind("garlic");
+        binder.forField(oldTimer)
+                .bind("oldTimer");
 
         Order order = new Order();
         order.setOrderId();
@@ -165,7 +204,7 @@ public class OrdersView extends VerticalLayout {
 
         HorizontalLayout buttons = new HorizontalLayout(ok, cancel);
 
-        VerticalLayout formLayout = new VerticalLayout(orderId, orderDate, pizza, size, quantity, price, garlic, buttons);
+        VerticalLayout formLayout = new VerticalLayout(orderId, orderDate, vehicleType, make, horspower, price, oldTimer, buttons);
 
         dialog.add(formLayout);
         dialog.open();
@@ -196,9 +235,9 @@ public class OrdersView extends VerticalLayout {
 
     private void addWrongOrder() {
         try{
-            Order o = new Order(LocalDate.now(), "Salami", "Large", 1, 3.0, true);
+            Order o = new Order(LocalDate.now(), "SUV", "NISSAN", 580, 4999.0, true);
             orderService.addOrder(o);
-        }catch (Exception e){
+        }catch (OrderException e){
            Notification.show(e.getMessage());
         }
     }

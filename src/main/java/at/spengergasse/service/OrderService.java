@@ -24,25 +24,25 @@ public class OrderService {
         Faker faker;
         Order       order;
         LocalDate   orderDate;
-        String      pizza;
-        String      size;
-        Integer     quantity;
+        String      vehicleType;
+        String      make;
+        Integer     horsepower;
         Double      price;
-        Boolean     garlic;
+        Boolean     oldTimer;
 
-        String[] PIZZAS = {"Margherita", "Salami", "Tonno", "Hawaii", "Funghi", "Diavolo"};
-        String[] SIZES = {"Small", "Medium", "Large", "Family"};
+        String[] VEHICLETYPE = {"SUV", "Coupe", "Sedan", "Van", "Pickup", "Roadster"};
+        String[] MAKE = {"NISSAN", "HONDA", "TOYOTA", "MAZDA", "SUBARU"};
 
         faker = new Faker();
 
         for(int i = 0; i < amount; i++){
             orderDate = LocalDate.now().minusDays((int) (Math.random() * 365 * 10));
-            pizza = PIZZAS[faker.number().numberBetween(0, PIZZAS.length - 1)];
-            size = SIZES[faker.number().numberBetween(0, SIZES.length - 1)];
-            quantity = faker.number().numberBetween(1, 5);
-            price = faker.number().randomDouble(2, 10, 50);
-            garlic = faker.bool().bool();
-            order = new Order(orderDate, pizza, size, quantity, price, garlic);
+            vehicleType = VEHICLETYPE[faker.number().numberBetween(0, VEHICLETYPE.length - 1)];
+            make = MAKE[faker.number().numberBetween(0, MAKE.length - 1)];
+            horsepower = faker.number().numberBetween(50, 1000);
+            price = faker.number().randomDouble(2, 5000, 100000);
+            oldTimer = faker.bool().bool();
+            order = new Order(orderDate, vehicleType, make, horsepower, price, oldTimer);
             orders.add(order);
         }
     }
@@ -94,7 +94,7 @@ public class OrderService {
             throw new OrderException("No Order ID!");
         for(Order o : orders){
             if(o.getOrderId().equals(orderId)) {
-                o.setQuantity(o.getQuantity() + 1);
+                o.setHorsepower(o.getHorsepower() + 1);
                 found = true;
             }
         }
@@ -105,6 +105,6 @@ public class OrderService {
     public void addOnePiece(Long orderId){
         orders.stream()
                 .filter(o -> o.getOrderId().equals(orderId))
-                .forEach(order -> order.setQuantity(order.getQuantity()+1));
+                .forEach(order -> order.setHorsepower(order.getHorsepower()+50));
     }
 }

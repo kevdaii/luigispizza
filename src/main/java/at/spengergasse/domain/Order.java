@@ -25,46 +25,46 @@ public class Order implements Cloneable{
     @PastOrPresent(message = "Order date must be now or in the past")
     private LocalDate   orderDate = LocalDate.now();
 
-    @NotBlank(message = "The pizza is required!")
-    @Size(min=2, max=20, message = "Wrong Pizza!")
-    private String      pizza = "Salami";
+    @NotBlank(message = "The vehicleType is required!")
+    @Size(min=2, max=20, message = "Wrong Type!")
+    private String      vehicleType = "Coupe";
 
-    @NotNull(message = "Size is required")
-    @Pattern(regexp = "Small|Medium|Large|Family", message = "Wrong size. Small|Medium|Large|Family")
-    private String      size = "Medium";
+    @NotNull(message = "Make is required")
+    @Pattern(regexp = "Nissan|Toyota|Mazda|Subaru", message = "Wrong make. Nissan|Toyota|Mazda|Subaru")
+    private String      make = "Mazda";
 
-    @NotNull(message = "The quantity is required")
-    @Min(value = 1, message = "Min 1 Pizza")
-    @Max(value = 5, message = "Max 5 Pizzas")
-    private Integer     quantity = 1;
+    @NotNull(message = "The horsepower is required")
+    @Min(value = 1, message = "Min 50")
+    @Max(value = 5, message = "Max 1000")
+    private Integer     horsepower = 280;
 
     @NotNull(message = "The price is required!")
-    @DecimalMin(value = "5", message = "The min price is 5 EUR!")
-    private Double      price = 9.0;
+    @DecimalMin(value = "5000", message = "The min price is 5000 EUR!")
+    private Double      price = 5000.0;
 
-    @NotNull(message = "The garlic is requirde")
-    private Boolean     garlic = false;
+    @NotNull(message = "The oldTimer is required!")
+    private Boolean     oldTimer = true;
 
     private static final AtomicLong sequence = new AtomicLong(1000);
 
-    public Order(Long orderId, LocalDate orderDate, String pizza, String size, Integer quantity, Double price, Boolean garlic){
+    public Order(Long orderId, LocalDate orderDate, String vehicleType, String make, Integer horsepower, Double price, Boolean oldTimer){
         setOrderId(orderId);
         setOrderDate(orderDate);
-        setPizza(pizza);
-        setSize(size);
-        setQuantity(quantity);
+        setVehicleType(vehicleType);
+        setMake(make);
+        setHorsepower(horsepower);
         setPrice(price);
-        setGarlic(garlic);
+        setOldTimer(oldTimer);
     }
 
-    public Order(LocalDate orderDate, String pizza, String size, Integer quantity, Double price, Boolean garlic){
+    public Order(LocalDate orderDate, String vehicleType, String make, Integer horsepower, Double price, Boolean oldTimer){
         setOrderId();
         setOrderDate(orderDate);
-        setPizza(pizza);
-        setSize(size);
-        setQuantity(quantity);
+        setVehicleType(vehicleType);
+        setMake(make);
+        setHorsepower(horsepower);
         setPrice(price);
-        setGarlic(garlic);
+        setOldTimer(oldTimer);
     }
 
     public Order() {}
@@ -74,13 +74,13 @@ public class Order implements Cloneable{
     }
 
     public void setPrice(Double price){
-        if (price.doubleValue() < 5)
+        if (price.doubleValue() < 5000)
             throw new OrderException("Price to low!");
         this.price = price;
     }
 
     @Override
     public Order clone(){
-        return new Order(orderId, orderDate, pizza, size, quantity, price, garlic);
+        return new Order(orderId, orderDate, vehicleType, make, horsepower, price, oldTimer);
     }
 }

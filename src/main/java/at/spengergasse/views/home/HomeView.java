@@ -21,11 +21,11 @@ public class HomeView extends VerticalLayout {
 
         add(getHeader());
 
-        Image img = new Image("images/logo.png", "pizza logo");
+        Image img = new Image("images/logo.png", "jdm logo");
         img.setWidth("200px");
         img.setHeight("200px");
 
-        Paragraph description = new Paragraph("Craving authentic, stone-baked pizza? Luigi’s Pizza serves up fresh, hand-tossed pies made with premium ingredients and a whole lot of love. Order online now!");
+        Paragraph description = new Paragraph("Pure JDM, delivered. Premium Japanese vehicle imports, seamlessly sourced and handled from the auctions in Tokyo to your garage.");
         description.setWidth("500px");
         description.getStyle()
                 .set("font-size", "22px")
@@ -35,7 +35,7 @@ public class HomeView extends VerticalLayout {
         HorizontalLayout desc = new HorizontalLayout(img, description);
         add(desc);
 
-        H3 name = new H3("Luigi's Pizza GmbH");
+        H3 name = new H3("JapaneseCarImport GmbH");
         H3 street = new H3 ("Goldschmiedgasse 10");
         H3 city = new H3 ("1010 Vienna");
 
@@ -47,17 +47,21 @@ public class HomeView extends VerticalLayout {
 
     public static Component getHeader(){
         VerticalLayout header;
-        H1 companyName = new H1("Luigi's Pizza");
+        H1 companyName = new H1("Japanese Car Import");
         companyName.getStyle()
-                .set("font-family", "cursive")
-                .set("font-size", "6rem")
+                .set("font-family", "'Rajdhani', 'Oswald', sans-serif")
+                .set("font-size", "4rem")
+                .set("font-weight", "600")
+                .set("text-transform", "uppercase")
                 .set("margin", "0");
 
-
-        H2 subtitle = new H2("... the best pizza in the world ...");
+        H2 subtitle = new H2("Premium JDM Sourcing");
         subtitle.getStyle()
+                .set("font-family", "'Inter', 'Roboto', sans-serif")
+                .set("font-weight", "400")
                 .set("margin", "0")
-                .set("color", "gray");
+                .set("color", "gray")
+                .set("letter-spacing", "2px");
 
         header = new VerticalLayout(companyName, subtitle);
         header.setSpacing(false);
